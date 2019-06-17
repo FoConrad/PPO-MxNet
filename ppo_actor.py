@@ -4,14 +4,12 @@ import time
 from collections import deque
 
 import numpy as np
-import mxnet as mx
 from mxnet import gluon, nd, autograd
 
 from policies import MLPPolicy
 
-
 class PPO(object):
-    def __init__(self, env, action_dim, batch_size, log_dir, expr_name, seed=42,
+    def __init__(self, env, action_dim, batch_size, expr_name, seed=42,
                  layer_sizes=[128], log_rate_iters=10, policy='mlp',
                  **policy_args):
         self.env = env
@@ -22,18 +20,8 @@ class PPO(object):
         self.batch_size = batch_size
         self._layer_sizes = layer_sizes
         self._policy_args = policy_args
-        self._log = {
-            'dir': log_dir,
-            'rate': log_rate_iters,
-            'queries': [],
-            'best_cost_model': None,
-            'last_cost_model': None,
-            'img_filename': expr_name,
-            'img_info': {
-                'layer_sizes': layer_sizes,
-                'expr_name': expr_name,
-            }
-        }
+        self._log_rate = log_rate_iters
+
         self._policy = policy
 
     def policy_fn(self):
@@ -165,14 +153,15 @@ class PPO(object):
             meanlosses = [pg_mean, vf_mean, entropy_mean]
             loss_names = ['pol_surr', 'vf_loss', 'pol_entpen']
 
-            try:
+            if callback is not None:
                 callback(locals())
-            except Exception as e:
-                print(e)
-                print('Finishing')
+
+            if iters_so_far % self._log_rate == 0 and self.env.solved():
                 break
 
         try:
-            env.finish()
+            # Try rendering
+            env.display()
         except:
             print('Some rendering error')
+        self.env.close()
