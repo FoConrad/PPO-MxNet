@@ -2,6 +2,9 @@
 *This code also origionally worked on with Chien-chein Huang and Sean Welleck as
 part of a larger project*
 
+`Please note, this code was ripped out of a larger project and as such the organization
+may not make perfect sense. I will clean this up if I have time`
+
 The goal of this repository is to create running [PPO](https://openai.com/blog/openai-baselines-ppo/)
 code (completely based off
 of OpenAI's [baselines](https://github.com/openai/baselines)) using MxNet, as
