@@ -172,6 +172,7 @@ class PPO(object):
                 print('Finishing')
                 break
 
-        env.display()
-        if hasattr(env, 'close'):
-            env.close()
+        try:
+            env.finish()
+        except:
+            print('Some rendering error')

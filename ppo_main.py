@@ -72,7 +72,7 @@ class Environment(object):
 
         return _evaluate(stochastic=False), _evaluate(stochastic=True)
 
-    def display(self):
+    def finish(self):
         ob = self._convert_state(self._env.reset())
         done = False
         while not done:
@@ -80,8 +80,7 @@ class Environment(object):
             ob, rew, done, _ = self._env.step(ac)
             ob = self._convert_state(ob)
             self._env.render()
-        #self.ob = self._convert_state(self._env.reset())
-        #self.new = True
+        self._env.close()
 
     def get_trajectory_sync(self):
         return next(self._gen)
